@@ -1,5 +1,7 @@
 package enigne
 
+import "math"
+
 type Value struct {
 	Data     float64
 	Grad     float64
@@ -38,12 +40,26 @@ func (v *Value) Mul(other *Value) *Value {
 	return n
 }
 
+func (v *Value) Pow(other *Value) *Value {
+	n := NewValue(math.Pow(v.Data, other.Data))
+	n.prev = []Value{*v, *other}
+	n._backward = func() {
+		v.Grad += other.Data * math.Pow(v.Data, other.Data - 1)  * n.Grad
+	}
+
+	return n
+}
+
 func (v *Value) Neg() *Value {
 	return v.Mul(NewValue(-1))
 }
 
 func (v *Value) Sub(other *Value) *Value {
 	return v.Add(other.Neg())
+}
+
+func (v *Value) Div(other *Value) *Value {
+	return v.Mul(other.Pow(NewValue(-1)))
 }
 
 func (v *Value) Backward() {
