@@ -50,6 +50,16 @@ func (v *Value) Pow(other *Value) *Value {
 	return n
 }
 
+func (v *Value) Tanh() *Value {
+	n := NewValue(math.Tanh(v.Data))
+	n.prev = []Value{*v}
+	n._backward = func() {
+		v.Grad += (1 - math.Pow(n.Data, 2)) * n.Grad
+	}
+
+	return n
+}
+
 func (v *Value) Neg() *Value {
 	return v.Mul(NewValue(-1))
 }

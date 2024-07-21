@@ -35,6 +35,15 @@ func TestPow(t *testing.T) {
 	}
 }
 
+func TestTanh(t *testing.T) {
+	a := NewValue(1)
+	b := a.Tanh()
+
+	if b.Data != math.Tanh(1) {
+		t.Errorf("Expected b.Data to be %v, but got %v", math.Tanh(1), b.Data)
+	}
+}
+
 func TestSub(t *testing.T) {
 	a := NewValue(5)
 	b := NewValue(3)
@@ -105,5 +114,15 @@ func TestBackward(t *testing.T) {
 	expectedAGrad := b.Data * math.Pow(a.Data, b.Data-1)
 	if a.Grad != expectedAGrad {
 		t.Errorf("Pow: Expected a.Grad to be %v, but got a.Grad=%v", expectedAGrad, a.Grad)
+	}
+
+	// Reset gradients
+	a.Grad = 0
+
+	// Test Tanh
+	c = a.Tanh()
+	c.Backward()
+	if a.Grad != 1-math.Pow(math.Tanh(a.Data), 2) {
+		t.Errorf("Tanh: Expected a.Grad to be %v, but got a.Grad=%v", 1-math.Pow(math.Tanh(a.Data), 2), a.Grad)
 	}
 }
