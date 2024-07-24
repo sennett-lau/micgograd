@@ -5,28 +5,29 @@ import (
 )
 
 type Neuron struct {
-	Value *Value
 	Weights []*Value
 	Bias    *Value
-	Inputs  []*Value
 }
 
-func NewNeuron(inputs []*Value) *Neuron {
-	act := NewValue(0)
-
-	weights := make([]*Value, len(inputs))
+func NewNeuron(numOfInputs int) *Neuron {
+	weights := make([]*Value, numOfInputs)
 	for i := range weights {
 		w := NewValue(rand.Float64()*2 - 1)
 		weights[i] = w
-		act = act.Add(w.Mul(inputs[i]))
 	}
 
 	bias := NewValue(rand.Float64()*2 - 1)
-	act = act.Add(bias)
 
-	output := act.Tanh()
+	return &Neuron{Weights: weights, Bias: bias}
+}
 
-	return &Neuron{Value: output, Weights: weights, Bias: bias, Inputs: inputs}
+func (n *Neuron) Forward(inputs []*Value) *Value {
+	act := NewValue(0)
+	for i, input := range inputs {
+		act = act.Add(n.Weights[i].Mul(input))
+	}
+	act = act.Add(n.Bias)
+	return act.Tanh()
 }
 
 func (n *Neuron) GetParams() []*Value {

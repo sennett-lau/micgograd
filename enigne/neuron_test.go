@@ -8,8 +8,11 @@ import (
 func TestNeuronData(t *testing.T) {
 	a := NewValue(3)
 	b := NewValue(2)
-	c := NewNeuron([]*Value{a, b})
+
+	c := NewNeuron(2)
 	
+	out := c.Forward([]*Value{a, b})
+
 	params := c.GetParams()
 	
 	w1 := params[0]
@@ -18,7 +21,7 @@ func TestNeuronData(t *testing.T) {
 
 	act := w1.Data * a.Data + w2.Data * b.Data + bias.Data
 
-	if (c.Value.Data != math.Tanh(act)) {
+	if (out.Data != math.Tanh(act)) {
 		t.Errorf("Neuron value is not correct")
 	}
 }
@@ -26,9 +29,10 @@ func TestNeuronData(t *testing.T) {
 func TestNeuronGrad(t *testing.T) {
 	a := NewValue(3)
 	b := NewValue(2)
-	c := NewNeuron([]*Value{a, b})
+	c := NewNeuron(2)
 	
 	params := c.GetParams()
+	out := c.Forward([]*Value{a, b})
 	
 	w1 := params[0]
 	w2 := params[1]
@@ -37,10 +41,10 @@ func TestNeuronGrad(t *testing.T) {
 	act := w1.Data * a.Data + w2.Data * b.Data + bias.Data
 
 
-	c.Value.Backward()
+	out.Backward()
 	
 
-	if (c.Value.Grad != 1) {
+	if (out.Grad != 1) {
 		t.Errorf("Output gradient is not correct")
 	}
 
