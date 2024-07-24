@@ -40,9 +40,7 @@ func TestNeuronGrad(t *testing.T) {
 
 	act := w1.Data * a.Data + w2.Data * b.Data + bias.Data
 
-
 	out.Backward()
-	
 
 	if (out.Grad != 1) {
 		t.Errorf("Output gradient is not correct")
