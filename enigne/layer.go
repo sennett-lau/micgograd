@@ -19,3 +19,11 @@ func (l *Layer) Forward(inputs []*Value) []*Value {
 	}
 	return outputs
 }
+
+func (l *Layer) GetParams() []*Value {
+	params := []*Value{}
+	for _, n := range l.Neurons {
+		params = append(params, n.GetParams()...)
+	}
+	return params
+}

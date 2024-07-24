@@ -21,3 +21,11 @@ func (m *MLP) Forward(inputs []*Value) []*Value {
 	}
 	return inputs
 }
+
+func (m *MLP) GetParams() []*Value {
+	params := []*Value{}
+	for _, layer := range m.Layers {
+		params = append(params, layer.GetParams()...)
+	}
+	return params
+}
