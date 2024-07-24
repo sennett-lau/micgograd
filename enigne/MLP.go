@@ -1,0 +1,23 @@
+package enigne
+
+type MLP struct {
+	Layers []*Layer
+}
+
+func NewMLP(inputSize int, outputSizes []int) *MLP {
+	layers := make([]*Layer, len(outputSizes) + 1)
+
+	for i, outputSize := range append([]int{inputSize}, outputSizes...) {
+		layers[i] = NewLayer(inputSize, outputSize)
+		inputSize = outputSize
+	}
+
+	return &MLP{Layers: layers}
+}
+
+func (m *MLP) Forward(inputs []*Value) []*Value {
+	for _, layer := range m.Layers {
+		inputs = layer.Forward(inputs)
+	}
+	return inputs
+}
