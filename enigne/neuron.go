@@ -33,3 +33,10 @@ func (n *Neuron) Forward(inputs []*Value) *Value {
 func (n *Neuron) GetParams() []*Value {
 	return append(n.Weights, n.Bias)
 }
+
+func (n *Neuron) ZeroGrad() {
+	params := n.GetParams()
+	for _, p := range params {
+		p.Grad = 0
+	}
+}

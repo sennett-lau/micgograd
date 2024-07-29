@@ -27,3 +27,9 @@ func (l *Layer) GetParams() []*Value {
 	}
 	return params
 }
+
+func (l *Layer) ZeroGrad() {
+	for _, n := range l.Neurons {
+		n.ZeroGrad()
+	}
+}

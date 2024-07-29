@@ -29,3 +29,16 @@ func (m *MLP) GetParams() []*Value {
 	}
 	return params
 }
+
+func (m *MLP) ZeroGrad() {
+	for _, layer := range m.Layers {
+		layer.ZeroGrad()
+	}
+}
+
+func (m *MLP) GradientDescent(lr float64) {
+	params := m.GetParams()
+	for _, p := range params {
+		p.Data -= p.Grad * lr
+	}
+}

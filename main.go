@@ -14,7 +14,13 @@ func main() {
 		{enigne.NewValue(1), enigne.NewValue(1), enigne.NewValue(-1)},
 	}
 
-	ys := []int{1, -1, -1, 1}
+
+	ys_values := []*enigne.Value{
+		enigne.NewValue(1),
+		enigne.NewValue(-1),
+		enigne.NewValue(-1),
+		enigne.NewValue(1),
+	}
 
 	mlp := enigne.NewMLP(3, []int{4, 4, 1})
 
@@ -27,11 +33,7 @@ func main() {
 			preds[i] = mlp.Forward(x)[0]
 		}
 
-		loss = enigne.NewValue(0)
-
-		for i, y := range ys {
-			loss = loss.Add(preds[i].Sub(enigne.NewValue(float64(y))).Pow(enigne.NewValue(2)))
-		}
+		loss = enigne.MSE(ys_values, preds)
 
 		if epoch%100 == 0 {
 			fmt.Print("Epoch\t", epoch, "\tLoss\t", loss.Data, "\tPredictions:\t")
@@ -49,10 +51,8 @@ func main() {
 
 		lr := 0.00001
 
-		for _, p := range mlp.GetParams() {
-			p.Data += -p.Grad * lr
-			p.Grad = 0
-		}
+		mlp.GradientDescent(lr)
+		mlp.ZeroGrad()
 	}
 
 	fmt.Print("Epoch\tFinal\tLoss\t", loss.Data, "\tPredictions:\t")
